@@ -39,28 +39,50 @@ class Grid {
         // Add $nbInitValue random elt : 2 (90%) or 4 (10%)
         let valuesToAdd = [];
         for(let i = 0; i < this.nbBoxToFill; i++){
-            let rand = Math.random() * 100;
+            this.addRandomBox();
+        }
+        
+        // console.log('grid initialized', this.grid);
+        this.debug();
+        this.draw();
+    }
 
-            let sumOfOccurenceFrequencies = 0;
-            let j = 0;
-            while(j < this.frequenciesOfOccurence.length && rand > sumOfOccurenceFrequencies){
-                sumOfOccurenceFrequencies += this.frequenciesOfOccurence[j];
-                j++;
             }
-            valuesToAdd.push(this.initValues[j-1]);
         }
 
-        // Add values to random box
-        valuesToAdd.forEach( (val) => {
-            let row = Math.round( Math.random() * ( this.nbRow - 1 ));
-            let col = Math.round( Math.random() * ( this.nbCol - 1 ));
+        return scoreToAdd;
+    }
 
-            while(newGrid[row][col] != null){
-                row = Math.round( Math.random() * ( this.nbRow - 1));
-                col = Math.round( Math.random() * ( this.nbCol - 1 ));
+    addRandomBox(){
+        let rand = Math.random() * 100;
+        let sumOfOccurenceFrequencies = 0;
+        let j = 0;
+        while(j < this.frequenciesOfOccurence.length && rand > sumOfOccurenceFrequencies){
+            sumOfOccurenceFrequencies += this.frequenciesOfOccurence[j];
+            j++;
+        }
+        let valueToAdd = this.initValues[j-1];
+
+        // Add value to random box
+        let row = Math.round( Math.random() * ( this.nbRow - 1 ));
+        let col = Math.round( Math.random() * ( this.nbCol - 1 ));
+
+        while(this.grid[row][col] != null){
+            row = Math.round( Math.random() * ( this.nbRow - 1));
+            col = Math.round( Math.random() * ( this.nbCol - 1 ));
+        }
+        this.grid[row][col] = valueToAdd;
+        // $('#row-' + row + '-col-' + col).html(valueToAdd).css('display', 'none').show( "slow" );
+    }
+
+    oneBoxIsFree(){
+        for(let i=0; i < this.nbRow; i++){
+            for(let j=0; j < this.nbRow; j++){
+                if(this.grid[i][j] == null) return true;
             }
-            newGrid[row][col] = val;
-        });
+        }
+        return false;
+    }
 
 
         // Save the grid
@@ -137,6 +159,9 @@ class Grid {
     }
 
     // Level
+    /**
+     * Getters / Setters
+     */
     get grid(){
         return this._grid;
     }
