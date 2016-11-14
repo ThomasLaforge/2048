@@ -81,8 +81,15 @@ class Grid {
             case KeycodeMap.LEFT:
 
                 break;
-            default:
+            
+            case KeycodeMap.RIGHT:
+
                 break;
+
+            default:
+                console.log('Action : Not valid action');
+                break;
+            
         }
     }
 
@@ -112,6 +119,20 @@ class Grid {
         });
 
         console.log(log);
+    }
+
+
+    moveElt(row, col, rowEnd, colEnd){
+        // controls
+        if(rowStart < 0 || rowEnd < 0 || colStart < 0 || colEnd < 0 || rowStart > this.nbRow || rowEnd > this.nbRow || colStart > this.nbCol || colEnd > this.nbCol ){
+            console.log(rowStart, colStart, rowEnd, colEnd);
+            throw new Error('Action: moveElt -> one element doesn\'t have valid coordonate');
+        }
+
+        // remove current box
+
+        // create new box
+        this.addBox(newBox);
     }
 
     // Level
