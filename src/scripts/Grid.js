@@ -250,11 +250,26 @@ class Grid {
         return false;
     }
 
+    fusionIsPossible(){
+        let res = false;
+        // Fusion
+        for(let i=0; i < this.nbRow; i++){
+            for(let j=0; j < this.nbRow; j++){
+                if(this.grid[i][j] != null){
+                    let nextRowWithSameValue = i + 1;
+                    
+                    while(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == null){
+                        nextRowWithSameValue++;
+                    }
 
-        // Save the grid
-        this.grid = newGrid;
-        console.log('grid initialized', this.grid);
-        this.debug();
+                    if(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
+                        res = true;
+                    }
+                }
+            }
+        }
+
+        return res;
     }
 
     draw(){
