@@ -257,28 +257,17 @@ class Grid {
         this.debug();
     }
 
-    action(keyCode){
-        switch (keyCode) {
-            case KeycodeMap.UP:
-                                
-                break;
-            
-            case KeycodeMap.DOWN:
-
-                break;
-            
-            case KeycodeMap.LEFT:
-
-                break;
-            
-            case KeycodeMap.RIGHT:
-
-                break;
-
-            default:
-                console.log('Action : Not valid action');
-                break;
-            
+    draw(){
+        $('#grid').empty();
+        for(let i = 0; i < this.nbRow; i++){
+            $('#grid').append(`
+                <div class="grid-row"></div>
+            `);
+            for(let j = 0; j < this.nbCol; j++){
+                $('.grid-row').last().append(`
+                    <div id="row-${i}-col-${j}" class="box ${this.grid[i][j] ? 'box-' + this.grid[i][j] : ''}">${this.grid[i][j] ? this.grid[i][j] : ''}</div>
+                `);
+            }
         }
     }
 
