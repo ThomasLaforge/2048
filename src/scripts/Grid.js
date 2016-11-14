@@ -47,7 +47,173 @@ class Grid {
         this.draw();
     }
 
+    action(keyCode){
+        let scoreToAdd = 0;
+        if(this.oneBoxIsFree() || this.fusionIsPossible()){
+            let factorI, factorJ;
+            if(keyCode == KeycodeMap.UP){
+                factorI = 1;
+                factorJ = 1;
+
+                // Fusion
+                for(let i=0; i < this.nbRow; i = i + 1 * factorI){
+                    for(let j=0; j < this.nbRow; j = j + 1 * factorJ){
+                        if(this.grid[i][j] != null){
+                            let nextRowWithSameValue = i + 1;
+                            
+                            while(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == null){
+                                nextRowWithSameValue++;
+                            }
+
+                            if(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
+                                this.grid[i][j] *= 2;
+                                scoreToAdd = this.grid[i][j];
+                                this.grid[nextRowWithSameValue][j] = null;
+                            }
+                        }
+                    }
+                }
+
+                // Move All
+                for(let i=0; i < this.nbRow; i = i + 1 * factorI){
+                    for(let j=0; j < this.nbRow; j = j + 1 * factorJ){
+                        if(this.grid[i][j] != null){
+                            let rowUp = i - 1;
+                            while(rowUp >= 0 && this.grid[rowUp][j] == null){
+                                rowUp--;
+                            }
+
+                            if(rowUp+1 >= 0 && this.grid[rowUp+1][j] == null){
+                                this.grid[rowUp+1][j] = this.grid[i][j];
+                                this.grid[i][j] = null;
+                            }
+                        }
+                    }
+                }
+                
             }
+            else if(keyCode == KeycodeMap.DOWN){
+                factorI = -1;
+                factorJ = 1;
+                            // Fusion
+                for(let i = this.nbRow - 1; i >= 0; i--){
+                    for(let j=0; j < this.nbRow; j++){
+                        if(this.grid[i][j] != null){
+                            let nextRowWithSameValue = i - 1;
+                            
+                            while(nextRowWithSameValue >= 0 && this.grid[nextRowWithSameValue][j] == null){
+                                nextRowWithSameValue--;
+                            }
+
+                            if(nextRowWithSameValue >= 0 && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
+                                this.grid[i][j] *= 2;
+                                scoreToAdd = this.grid[i][j];                                
+                                this.grid[nextRowWithSameValue][j] = null;
+                            }
+                        }
+                    }
+                }
+
+                // Move All
+                for(let i = this.nbRow - 1; i >= 0; i--){
+                    for(let j=0; j < this.nbRow; j = j + 1 * factorJ){
+                        if(this.grid[i][j] != null){
+                            let rowUp = i + 1;
+                            while(rowUp < this.nbRow && this.grid[rowUp][j] == null){
+                                rowUp++;
+                            }
+
+                            if(rowUp - 1 < this.nbRow && this.grid[rowUp-1][j] == null){
+                                this.grid[rowUp - 1][j] = this.grid[i][j];
+                                this.grid[i][j] = null;
+                            }
+                        }
+                    }
+                }            
+            }
+            else if(keyCode == KeycodeMap.LEFT){
+                // Fusion
+                for(let j=0; j < this.nbCol; j++){
+                    for(let i=0; i < this.nbRow; i++){
+                        if(this.grid[i][j] != null){
+                            let nextColWithSameValue = j + 1;
+                            
+                            while(nextColWithSameValue < this.nbRow && this.grid[i][nextColWithSameValue] == null){
+                                nextColWithSameValue++;
+                            }
+
+                            if(nextColWithSameValue < this.nbRow && this.grid[i][nextColWithSameValue] == this.grid[i][j]){
+                                this.grid[i][j] *= 2;
+                                scoreToAdd = this.grid[i][j];                            
+                                this.grid[i][nextColWithSameValue] = null;
+                            }
+                        }
+                    }
+                }
+
+                // Move All
+                for(let j=0; j < this.nbCol; j++){
+                    for(let i=0; i < this.nbRow; i++){
+                        if(this.grid[i][j] != null){
+                            let colUp = j - 1;
+                            while(colUp >= 0 && this.grid[i][colUp] == null){
+                                colUp--;
+                            }
+
+                            if(colUp + 1 >= 0 && this.grid[i][colUp + 1] == null){
+                                this.grid[i][colUp + 1] = this.grid[i][j];
+                                this.grid[i][j] = null;
+                            }
+                        }
+                    }
+                }
+            }
+            else if(keyCode == KeycodeMap.RIGHT){
+                for(let j = this.nbCol - 1; j >= 0; j--){
+                    for(let i=0; i < this.nbRow; i++){
+                        if(this.grid[i][j] != null){
+                            let nextColWithSameValue = j - 1;
+                            
+                            while(nextColWithSameValue >= 0 && this.grid[i][nextColWithSameValue] == null){
+                                nextColWithSameValue--;
+                            }
+
+                            if(nextColWithSameValue >= 0 && this.grid[i][nextColWithSameValue] == this.grid[i][j]){
+                                this.grid[i][j] *= 2;
+                                scoreToAdd = this.grid[i][j];                                
+                                this.grid[i][nextColWithSameValue] = null;
+                            }
+                        }
+                    }
+                }
+
+                // Move All
+                for(let j = this.nbCol - 1; j >= 0; j--){
+                    for(let i=0; i < this.nbRow; i++){
+                        if(this.grid[i][j] != null){
+                            let colUp = j + 1;
+                            while(colUp < this.nbRow && this.grid[i][colUp] == null){
+                                colUp++;
+                            }
+
+                            if(colUp - 1 < this.nbCol && this.grid[i][colUp-1] == null){
+                                this.grid[i][colUp-1] = this.grid[i][j];
+                                this.grid[i][j] = null;
+                            }
+                        }
+                    }
+                }           
+            }
+            else{
+                throw new Error('Action : Not valid action');
+            }
+
+            this.addRandomBox();            
+            this.debug();
+            this.draw();
+        }
+        else{
+            console.log('gameOver');
         }
 
         return scoreToAdd;
