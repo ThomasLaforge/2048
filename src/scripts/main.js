@@ -6,7 +6,11 @@ let grid = new Grid();
 let score = 0;
 
 $('body').keyup( (e) => {
-    grid.action(e.keyCode);
+    if(e.keyCode != KeycodeMap.DOWN && e.keyCode != KeycodeMap.UP && e.keyCode != KeycodeMap.LEFT && e.keyCode != KeycodeMap.RIGHT ){
+        console.log('not a key with action');
+    }
+    else{
         score += grid.action(e.keyCode);
         $('#score').html(score);
+    }
 });
