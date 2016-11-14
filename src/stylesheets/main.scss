@@ -6,3 +6,39 @@ body{
 h1, .title-top{
   text-align: center;
 }
+
+.grid{
+  /*border: 1px red solid;*/
+  
+}
+
+.box{
+  height: 75px;
+  line-height: 75px;
+  width: 75px;
+  text-align: center;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+
+  border: 1px solid grey;
+}
+
+.grid-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+   
+}
+
+.box-2{  background-color: yellow; }
+.box-4{  background-color: orange; }
+.box-8{  background-color: darkorange; }
+.box-16{  background-color: red; }
+.box-32{  background-color: yellow; }
+.box-64{  background-color: yellow; }
+.box-128{  background-color: yellow; }
+.box-256{  background-color: yellow; }
+.box-512{  background-color: yellow; }
+.box-1024{  background-color: yellow; }
+.box-2048{  background-color: yellow; }
