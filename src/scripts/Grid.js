@@ -21,7 +21,7 @@ class Grid {
         this.nbBoxToFill = nbBoxToFill;
         this.initValues = initValues;
         this.frequenciesOfOccurence = frequenciesOfOccurence;
-        this.grid = this.initGrid();
+        this.initGrid();
     }
 
     initGrid(){
@@ -34,6 +34,7 @@ class Grid {
             }
             newGrid.push(newRow);
         }
+        this.grid = newGrid;
 
         // Add $nbInitValue random elt : 2 (90%) or 4 (10%)
         let valuesToAdd = [];
