@@ -39,178 +39,104 @@ class Grid {
         // Add $nbInitValue random elt : 2 (90%) or 4 (10%)
         let valuesToAdd = [];
         for(let i = 0; i < this.nbBoxToFill; i++){
-            this.addRandomBox();
+            this.addRandomTile();
         }
         
         // console.log('grid initialized', this.grid);
         this.debug();
-        this.draw();
+        // this.draw();
+    }
+
+    moveUp(){
+        let scoreToAdd = 0;
+        // Fusion
+        for(let i=0; i < this.nbRow; i++){
+            for(let j=0; j < this.nbRow; j++){
+                if(this.grid[i][j] != null){
+                    let nextRowWithSameValue = i + 1;
+                    
+                    while(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == null){
+                        nextRowWithSameValue++;
+                    }
+
+                    if(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
+                        this.grid[i][j] *= 2;
+                        scoreToAdd = this.grid[i][j];
+                        this.grid[nextRowWithSameValue][j] = null;
+                    }
+                }
+            }
+        }
+
+        // Move All
+        for(let i=0; i < this.nbRow; i++){
+            for(let j=0; j < this.nbRow; j++){
+                if(this.grid[i][j] != null){
+                    let rowUp = i - 1;
+                    while(rowUp >= 0 && this.grid[rowUp][j] == null){
+                        rowUp--;
+                    }
+
+                    if(rowUp+1 >= 0 && this.grid[rowUp+1][j] == null){
+                        this.grid[rowUp+1][j] = this.grid[i][j];
+                        this.grid[i][j] = null;
+                    }
+                }
+            }
+        }
+
+        return scoreToAdd;
+    }
+
+    rotate(){
+        let transformedArray = [];
+		for ( var i = 0; i < this.grid[0].length; i++ ){
+            transformedArray[i] = [];
+            
+            // fill the row with everything in the appropriate column of the source array
+            var transformedArrayColumn = -1;
+            for ( var j = this.grid.length - 1; j > -1; j-- ){
+                transformedArrayColumn++;
+                transformedArray[i][transformedArrayColumn] = this.grid[j][i]
+            }
+        }
+        this.grid = transformedArray;
     }
 
     action(keyCode){
         let scoreToAdd = 0;
-        if(this.oneBoxIsFree() || this.fusionIsPossible()){
-            let factorI, factorJ;
+        if(this.oneTileIsFree() || this.fusionIsPossible() || this.moveIsPossible()){
             if(keyCode == KeycodeMap.UP){
-                factorI = 1;
-                factorJ = 1;
-
-                // Fusion
-                for(let i=0; i < this.nbRow; i = i + 1 * factorI){
-                    for(let j=0; j < this.nbRow; j = j + 1 * factorJ){
-                        if(this.grid[i][j] != null){
-                            let nextRowWithSameValue = i + 1;
-                            
-                            while(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == null){
-                                nextRowWithSameValue++;
-                            }
-
-                            if(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
-                                this.grid[i][j] *= 2;
-                                scoreToAdd = this.grid[i][j];
-                                this.grid[nextRowWithSameValue][j] = null;
-                            }
-                        }
-                    }
-                }
-
-                // Move All
-                for(let i=0; i < this.nbRow; i = i + 1 * factorI){
-                    for(let j=0; j < this.nbRow; j = j + 1 * factorJ){
-                        if(this.grid[i][j] != null){
-                            let rowUp = i - 1;
-                            while(rowUp >= 0 && this.grid[rowUp][j] == null){
-                                rowUp--;
-                            }
-
-                            if(rowUp+1 >= 0 && this.grid[rowUp+1][j] == null){
-                                this.grid[rowUp+1][j] = this.grid[i][j];
-                                this.grid[i][j] = null;
-                            }
-                        }
-                    }
-                }
-                
+                scoreToAdd = this.moveUp();
             }
             else if(keyCode == KeycodeMap.DOWN){
-                factorI = -1;
-                factorJ = 1;
-                            // Fusion
-                for(let i = this.nbRow - 1; i >= 0; i--){
-                    for(let j=0; j < this.nbRow; j++){
-                        if(this.grid[i][j] != null){
-                            let nextRowWithSameValue = i - 1;
-                            
-                            while(nextRowWithSameValue >= 0 && this.grid[nextRowWithSameValue][j] == null){
-                                nextRowWithSameValue--;
-                            }
-
-                            if(nextRowWithSameValue >= 0 && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
-                                this.grid[i][j] *= 2;
-                                scoreToAdd = this.grid[i][j];                                
-                                this.grid[nextRowWithSameValue][j] = null;
-                            }
-                        }
-                    }
-                }
-
-                // Move All
-                for(let i = this.nbRow - 1; i >= 0; i--){
-                    for(let j=0; j < this.nbRow; j = j + 1 * factorJ){
-                        if(this.grid[i][j] != null){
-                            let rowUp = i + 1;
-                            while(rowUp < this.nbRow && this.grid[rowUp][j] == null){
-                                rowUp++;
-                            }
-
-                            if(rowUp - 1 < this.nbRow && this.grid[rowUp-1][j] == null){
-                                this.grid[rowUp - 1][j] = this.grid[i][j];
-                                this.grid[i][j] = null;
-                            }
-                        }
-                    }
-                }            
+                this.rotate();
+                this.rotate();
+                scoreToAdd = this.moveUp();
+                this.rotate();
+                this.rotate();          
             }
             else if(keyCode == KeycodeMap.LEFT){
-                // Fusion
-                for(let j=0; j < this.nbCol; j++){
-                    for(let i=0; i < this.nbRow; i++){
-                        if(this.grid[i][j] != null){
-                            let nextColWithSameValue = j + 1;
-                            
-                            while(nextColWithSameValue < this.nbRow && this.grid[i][nextColWithSameValue] == null){
-                                nextColWithSameValue++;
-                            }
-
-                            if(nextColWithSameValue < this.nbRow && this.grid[i][nextColWithSameValue] == this.grid[i][j]){
-                                this.grid[i][j] *= 2;
-                                scoreToAdd = this.grid[i][j];                            
-                                this.grid[i][nextColWithSameValue] = null;
-                            }
-                        }
-                    }
-                }
-
-                // Move All
-                for(let j=0; j < this.nbCol; j++){
-                    for(let i=0; i < this.nbRow; i++){
-                        if(this.grid[i][j] != null){
-                            let colUp = j - 1;
-                            while(colUp >= 0 && this.grid[i][colUp] == null){
-                                colUp--;
-                            }
-
-                            if(colUp + 1 >= 0 && this.grid[i][colUp + 1] == null){
-                                this.grid[i][colUp + 1] = this.grid[i][j];
-                                this.grid[i][j] = null;
-                            }
-                        }
-                    }
-                }
+                this.rotate();
+                scoreToAdd = this.moveUp();
+                this.rotate();
+                this.rotate();
+                this.rotate();
             }
             else if(keyCode == KeycodeMap.RIGHT){
-                for(let j = this.nbCol - 1; j >= 0; j--){
-                    for(let i=0; i < this.nbRow; i++){
-                        if(this.grid[i][j] != null){
-                            let nextColWithSameValue = j - 1;
-                            
-                            while(nextColWithSameValue >= 0 && this.grid[i][nextColWithSameValue] == null){
-                                nextColWithSameValue--;
-                            }
-
-                            if(nextColWithSameValue >= 0 && this.grid[i][nextColWithSameValue] == this.grid[i][j]){
-                                this.grid[i][j] *= 2;
-                                scoreToAdd = this.grid[i][j];                                
-                                this.grid[i][nextColWithSameValue] = null;
-                            }
-                        }
-                    }
-                }
-
-                // Move All
-                for(let j = this.nbCol - 1; j >= 0; j--){
-                    for(let i=0; i < this.nbRow; i++){
-                        if(this.grid[i][j] != null){
-                            let colUp = j + 1;
-                            while(colUp < this.nbRow && this.grid[i][colUp] == null){
-                                colUp++;
-                            }
-
-                            if(colUp - 1 < this.nbCol && this.grid[i][colUp-1] == null){
-                                this.grid[i][colUp-1] = this.grid[i][j];
-                                this.grid[i][j] = null;
-                            }
-                        }
-                    }
-                }           
+                this.rotate();
+                this.rotate();
+                this.rotate();
+                scoreToAdd = this.moveUp();
+                this.rotate();       
             }
             else{
                 throw new Error('Action : Not valid action');
             }
 
-            this.addRandomBox();
+            this.addRandomTile();
             this.debug();
-            this.draw();
+            // this.draw();
         }
         else{
             this.gameOver = true;
@@ -219,7 +145,7 @@ class Grid {
         return scoreToAdd;
     }
 
-    addRandomBox(){
+    addRandomTile(){
         let rand = Math.random() * 100;
         let sumOfOccurenceFrequencies = 0;
         let j = 0;
@@ -230,18 +156,38 @@ class Grid {
         let valueToAdd = this.initValues[j-1];
 
         // Add value to random box
-        let row = Math.round( Math.random() * ( this.nbRow - 1 ));
-        let col = Math.round( Math.random() * ( this.nbCol - 1 ));
-
-        while(this.grid[row][col] != null){
-            row = Math.round( Math.random() * ( this.nbRow - 1));
-            col = Math.round( Math.random() * ( this.nbCol - 1 ));
+        let randomFreeTile = this.getRandomTileFree();
+        if(randomFreeTile != null){
+            this.grid[randomFreeTile.row][randomFreeTile.col] = valueToAdd;
         }
-        this.grid[row][col] = valueToAdd;
         // $('#row-' + row + '-col-' + col).html(valueToAdd).css('display', 'none').show( "slow" );
     }
 
-    oneBoxIsFree(){
+    getRandomTileFree(){
+        let allTileFree = this.getAllTileFree();
+        let res = null;
+        
+        if(allTileFree.length > 0){
+            let randomTileFreeIndex = Math.floor( Math.random() * allTileFree.length);
+            res = allTileFree[randomTileFreeIndex];
+        }
+
+        return res;        
+    }
+
+    getAllTileFree(){
+        let arrTileFree = [];
+        for(let i=0; i < this.nbRow; i++){
+            for(let j=0; j < this.nbRow; j++){
+                if(this.grid[i][j] == null){
+                    arrTileFree.push({row:i, col:j});
+                }
+            }
+        }
+        return arrTileFree;
+    }
+
+    oneTileIsFree(){
         for(let i=0; i < this.nbRow; i++){
             for(let j=0; j < this.nbRow; j++){
                 if(this.grid[i][j] == null) return true;
@@ -320,6 +266,48 @@ class Grid {
         return res;
     }
 
+    canMoveUp(){
+        let canMoveUp = false;
+        let i = 0;
+        
+        while(i < this.nbRow && !canMoveUp){
+            let j = 0;
+            while(j < this.nbCol && !canMoveUp){
+                if(this.grid[i][j] != null){
+                    let nextRowWithSameValue = i + 1;
+                    
+                    while(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == null){
+                        nextRowWithSameValue++;
+                    }
+
+                    if(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
+                        canMoveUp = true;
+                    }
+                }
+                j++;
+            }
+
+            i++;
+        }
+
+        return canMoveUp;
+    }
+
+    moveIsPossible(){
+        let moveIsPossible = false;
+        let rotationToDo = 4;
+        let cpt = 0;
+
+        while(cpt < rotationToDo && !moveIsPossible){
+            this.rotate();
+            this.canMoveUp();
+        }
+
+        moveIsPossible = true;
+
+        return moveIsPossible;
+    }
+
     draw(){
         $('#grid').empty();
         for(let i = 0; i < this.nbRow; i++){
@@ -332,22 +320,6 @@ class Grid {
                 `);
             }
         }
-    }
-
-    transpose(){	
-        var newArray = [],
-        origArrayLength = array.length,
-        arrayLength = array[0].length,
-        i;
-        for (i = 0; i < arrayLength; i++) {
-            newArray.push([]);
-        };
-
-        for (i = 0; i < origArrayLength; i++) {
-            for (var j = 0; j < arrayLength; j++) {
-                newArray[j].push(array[i][j]);
-            };
-        };
     }
 
     debug(){
@@ -386,6 +358,13 @@ class Grid {
     }
     set grid( newGrid ){
         this._grid = newGrid;
+    }
+
+    get gameOver(){
+        return this._gameOver;
+    }
+    set gameOver( newgameOver ){
+        this._gameOver = newgameOver;
     }
 
     get nbRow(){
