@@ -208,7 +208,7 @@ class Grid {
                 throw new Error('Action : Not valid action');
             }
 
-            this.addRandomBox();            
+            this.addRandomBox();
             this.debug();
             this.draw();
         }
@@ -263,6 +263,54 @@ class Grid {
                     }
 
                     if(nextRowWithSameValue < this.nbRow && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
+                        res = true;
+                    }
+                }
+            }
+        }
+
+        for(let i = this.nbRow - 1; i >= 0; i--){
+            for(let j=0; j < this.nbRow; j++){
+                if(this.grid[i][j] != null){
+                    let nextRowWithSameValue = i - 1;
+                    
+                    while(nextRowWithSameValue >= 0 && this.grid[nextRowWithSameValue][j] == null){
+                        nextRowWithSameValue--;
+                    }
+
+                    if(nextRowWithSameValue >= 0 && this.grid[nextRowWithSameValue][j] == this.grid[i][j]){
+                        res = true;
+                    }
+                }
+            }
+        }
+
+        for(let j=0; j < this.nbCol; j++){
+            for(let i=0; i < this.nbRow; i++){
+                if(this.grid[i][j] != null){
+                    let nextColWithSameValue = j + 1;
+                    
+                    while(nextColWithSameValue < this.nbRow && this.grid[i][nextColWithSameValue] == null){
+                        nextColWithSameValue++;
+                    }
+
+                    if(nextColWithSameValue < this.nbRow && this.grid[i][nextColWithSameValue] == this.grid[i][j]){
+                        res = true;
+                    }
+                }
+            }
+        }
+
+        for(let j = this.nbCol - 1; j >= 0; j--){
+            for(let i=0; i < this.nbRow; i++){
+                if(this.grid[i][j] != null){
+                    let nextColWithSameValue = j - 1;
+                    
+                    while(nextColWithSameValue >= 0 && this.grid[i][nextColWithSameValue] == null){
+                        nextColWithSameValue--;
+                    }
+
+                    if(nextColWithSameValue >= 0 && this.grid[i][nextColWithSameValue] == this.grid[i][j]){
                         res = true;
                     }
                 }
