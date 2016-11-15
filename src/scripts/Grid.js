@@ -86,6 +86,22 @@ class Grid {
         }
     }
 
+    transpose(){	
+        var newArray = [],
+        origArrayLength = array.length,
+        arrayLength = array[0].length,
+        i;
+        for (i = 0; i < arrayLength; i++) {
+            newArray.push([]);
+        };
+
+        for (i = 0; i < origArrayLength; i++) {
+            for (var j = 0; j < arrayLength; j++) {
+                newArray[j].push(array[i][j]);
+            };
+        };
+    }
+
     debug(){
         let log = '';
 
