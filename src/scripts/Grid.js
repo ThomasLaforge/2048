@@ -15,7 +15,7 @@ class Grid {
             throw new Error('Config: Number of box to fill is superior of number of box');
         }
 
-
+        this.gameOver = false;
         this.nbRow = nbRow;
         this.nbCol = nbCol;
         this.nbBoxToFill = nbBoxToFill;
@@ -213,7 +213,7 @@ class Grid {
             this.draw();
         }
         else{
-            console.log('gameOver');
+            this.gameOver = true;
         }
 
         return scoreToAdd;

@@ -12,5 +12,9 @@ $('body').keyup( (e) => {
     else{
         score += grid.action(e.keyCode);
         $('#score').html(score);
+
+        if(grid.gameOver){
+            console.log('game is over');
+        }
     }
 });
