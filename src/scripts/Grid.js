@@ -1,7 +1,7 @@
 import { KeycodeMap } from './Enums';
 
 class Grid {
-    constructor(nbRow = 2, nbCol = 2, nbBoxToFill = 2, initValues = [2, 4], frequenciesOfOccurence = [90, 10]){
+    constructor(nbRow = 4, nbCol = 4, nbBoxToFill = 2, initValues = [2, 4], frequenciesOfOccurence = [90, 10]){
         // controls
         let sumOfOccurenceFrequencies = 0;
         frequenciesOfOccurence.forEach( (frequency) => {
@@ -44,7 +44,7 @@ class Grid {
         
         // console.log('grid initialized', this.grid);
         this.debug();
-        // this.draw();
+        this.draw();
     }
 
     moveUp(){
@@ -140,7 +140,7 @@ class Grid {
             if(resOfMove.hasMovedOrFused){
                 this.addRandomTile();
                 this.debug();
-                // this.draw();
+                this.draw();
             }
         }
         else{
