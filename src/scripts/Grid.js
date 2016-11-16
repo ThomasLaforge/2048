@@ -44,11 +44,12 @@ class Grid {
         
         // console.log('grid initialized', this.grid);
         this.debug();
-        // this.draw();
+        this.draw();
     }
 
     moveUp(){
         let scoreToAdd = 0;
+        let hasMovedOrFused = false;
         // Fusion
         for(let i=0; i < this.nbRow; i++){
             for(let j=0; j < this.nbRow; j++){
@@ -63,6 +64,7 @@ class Grid {
                         this.grid[i][j] *= 2;
                         scoreToAdd = this.grid[i][j];
                         this.grid[nextRowWithSameValue][j] = null;
+                        if(!hasMovedOrFused) hasMovedOrFused = true;
                     }
                 }
             }
@@ -80,12 +82,13 @@ class Grid {
                     if(rowUp+1 >= 0 && this.grid[rowUp+1][j] == null){
                         this.grid[rowUp+1][j] = this.grid[i][j];
                         this.grid[i][j] = null;
+                        if(!hasMovedOrFused) hasMovedOrFused = true;                        
                     }
                 }
             }
         }
 
-        return scoreToAdd;
+        return { scoreToAdd : scoreToAdd, hasMovedOrFused : hasMovedOrFused };
     }
 
     rotate(){
@@ -104,21 +107,21 @@ class Grid {
     }
 
     action(keyCode){
-        let scoreToAdd = 0;
+        let resOfMove;
         if(this.oneTileIsFree() || this.fusionIsPossible() || this.moveIsPossible()){
             if(keyCode == KeycodeMap.UP){
-                scoreToAdd = this.moveUp();
+                resOfMove = this.moveUp();
             }
             else if(keyCode == KeycodeMap.DOWN){
                 this.rotate();
                 this.rotate();
-                scoreToAdd = this.moveUp();
+                resOfMove = this.moveUp();
                 this.rotate();
                 this.rotate();          
             }
             else if(keyCode == KeycodeMap.LEFT){
                 this.rotate();
-                scoreToAdd = this.moveUp();
+                resOfMove = this.moveUp();
                 this.rotate();
                 this.rotate();
                 this.rotate();
@@ -127,22 +130,24 @@ class Grid {
                 this.rotate();
                 this.rotate();
                 this.rotate();
-                scoreToAdd = this.moveUp();
+                resOfMove = this.moveUp();
                 this.rotate();       
             }
             else{
                 throw new Error('Action : Not valid action');
             }
 
-            this.addRandomTile();
-            this.debug();
-            // this.draw();
+            if(resOfMove.hasMovedOrFused){
+                this.addRandomTile();
+                this.debug();
+                this.draw();
+            }
         }
         else{
             this.gameOver = true;
         }
 
-        return scoreToAdd;
+        return resOfMove ? resOfMove.scoreToAdd : 0;
     }
 
     addRandomTile(){
@@ -300,12 +305,11 @@ class Grid {
 
         while(cpt < rotationToDo && !moveIsPossible){
             this.rotate();
-            this.canMoveUp();
+            moveIsPossible = this.canMoveUp();
+            cpt++;
         }
 
-        moveIsPossible = true;
-
-        return moveIsPossible;
+        return cpt != rotationToDo;
     }
 
     draw(){
