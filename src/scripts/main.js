@@ -10,11 +10,15 @@ $('body').keyup( (e) => {
         console.log('not a key with action');
     }
     else{
-        score += grid.action(e.keyCode);
-        $('#score').html(score);
-
-        if(grid.gameOver){
-            console.log('game is over');
+        if(!grid.gameOver){
+            score += grid.action(e.keyCode);
+            $('#score').html(score);
+            if(grid.gameOver){
+                console.log('game is over');
+            }
+        }
+        else{
+            console.log("game is already over");
         }
     }
 });
